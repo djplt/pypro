@@ -11,7 +11,7 @@ pypro is a simple python project maker script which uses poetry & pyenv to setup
 
 Download the repository
 ```bash
-git clone xxx
+git clone https://github.com/djplt/pypro.git
 ```
 
 You also need to add the scripts to your path
