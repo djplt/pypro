@@ -1,0 +1,13 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run jupyter notebook",
+      "type": "shell",
+      "command": "source ${workspaceFolder}/.venv/bin/activate; cd ${workspaceFolder}/.jupyter; python -m jupyter notebook;",
+      "problemMatcher": []
+    }
+  ]
+}
