@@ -3,7 +3,7 @@
 pypro is a simple python project maker script which uses poetry & pyenv to setup your own customizable dev environment.
 
 ## Prerequisites
-* poetry
+* poetry - https://python-poetry.org/docs/
 * pyenv - with the python version that you want to use
 * Linux or Windows (with powershell) OS
 

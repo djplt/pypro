@@ -39,6 +39,13 @@ if ((-Not $pyenvInstalled) -and (-Not $pythonInstalled)) {
 elseif (-Not $pyenvInstalled) {
   Write-Output "Warning pyenv is not installed or could not be found on path"
 }
+else {
+  $Host.UI.RawUI.FlushInputBuffer()
+  $ans = Read-Host "Do you want to use pyenv?"
+  if ($ans -eq 'n') {
+    $pyenvInstalled = 0
+  }
+}
 
 Write-Output "`n***`n"
 $poetryV = poetry --version
@@ -112,11 +119,12 @@ if ($pyenvInstalled)
   }
 }
 else {
+  # No pyenv
   Write-Output "Current python version is $(python -V)"
   Write-Output "Current python path is $(where.exe python)"
   $currentPython = "python"
   $Host.UI.RawUI.FlushInputBuffer()
-  $response = Read-Host "Use this python version?"
+  $ans = Read-Host "Use this python version?"
   if ($ans -eq 'y') {
     # Pass
   }
@@ -124,15 +132,27 @@ else {
     $Host.UI.RawUI.FlushInputBuffer()
     $currentPython = Read-Host "Please type in the python executable to use (or full path to python if not in path)"
   }
-
 }
 
 Write-Output "`n***`n"
 $Host.UI.RawUI.FlushInputBuffer()
 $proj = Read-Host "Please enter a project name: "
 
-poetry new $proj
-Set-Location $proj
+$Host.UI.RawUI.FlushInputBuffer()
+$ans = Read-Host "Please select an option`nUse standard poetry module structure? [y] Or define do you want to define it yourself later? [n] : "
+if ($ans -eq 'y') {
+  poetry new $proj
+  Set-Location $proj
+}
+elseif($ans -eq 'n') {
+  mkdir $proj
+  Set-Location $proj
+  poetry init -n
+}
+else {
+  Write-Output "Unknown option"
+  exit 1
+}
 
 $didPythonPathGetSetCorrectly = 1
 if ($pyenvInstalled) {
@@ -162,9 +182,11 @@ if ( $ans -eq 'y' )
 {
 	poetry add --dev ipython black flake8 jupyter notebook
   $Host.UI.RawUI.FlushInputBuffer()
-	$ans = Read-Host "Install older version of jedi for temporary ipython/jupyter incompatability?"
-  if ( $response -eq 'y' )
+  Write-Output "There is a bug with the latest version of ipython with tab complete https://github.com/ipython/ipython/issues/12740"
+	$ans = Read-Host "Install older version of jedi for temporary compatability?"
+  if ( $ans -eq 'y' )
   {
+    Write-Output "Updating jedi"
     poetry add --dev 'jedi=0.17.2'
   }
 }
@@ -183,12 +205,7 @@ if ( $ans -eq 'y' )
 	git init;
 }
 
-$Host.UI.RawUI.FlushInputBuffer()
-$ans = Read-Host "Open VSCode?"
-if ( $response -eq 'y' )
-{
-  code .
-}
+Write-Output "You can open this folder is vscode or 'code .'"
 
 if ($didPythonPathGetSetCorrectly -eq 0) {
   Write-Output "error setting poetry python executable, you can try `npoetry env use python_exe"
